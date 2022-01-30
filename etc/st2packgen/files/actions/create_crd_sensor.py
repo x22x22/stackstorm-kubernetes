@@ -5,7 +5,7 @@ import jinja2
 import requests
 
 
-class createTPRSensor(Action):
+class createCRDSensor(Action):
 
     def run(self, payload):
 
@@ -27,11 +27,11 @@ class createTPRSensor(Action):
         if 'verify' in self.config:
             kwargs['verify'] = self.config['verify']
 
-        tpr = payload['name']
+        crd = payload['name']
 
-        allvars['name'], allvars['domain'] = tpr.split('.', 1)
+        allvars['name'], allvars['apigroup'] = crd.split('.', 1)
 
-        k8s_api_url = self.config['kubernetes_api_url'] + "/apis/" + allvars['domain'] + "/v1"
+        k8s_api_url = self.config['kubernetes_api_url'] + "/apis/" + allvars['apigroup'] + "/v1"
 
         r = requests.get(k8s_api_url, **kwargs)
 
@@ -40,21 +40,16 @@ class createTPRSensor(Action):
 
         data = json.loads(r.text)
 
-        cname = allvars['name'].capitalize()
-        allvars['kind'] = cname
+        allvars['kind'] = payload['spec']['names']['kind']
+        allvars['plural'] = payload['spec']['names']['plural']
+        allvars['singular'] = payload['spec']['names']['singular']
 
-        pname = None
-        for res in data['resources']:
-            if res['kind'] == cname:
-                pname = res['name']
-                break
+        if allvars['plural'] is None:
+            return (False, "CRD missing plural; please double check configuration")
 
-        if pname is None:
-            return (False, "Couldn't match 3PR with an api endpoint")
-
-        allvars['watchurl'] = "/apis/prsn.io/v1/watch/" + pname
-        allvars['triggername'] = "tpr" + allvars['name']
-        allvars['operationId'] = "watch" + cname
+        allvars['watchurl'] = "/apis/" + allvars['apigroup'] + "/v1/watch/" + allvars['plural']
+        allvars['triggername'] = "crd" + allvars['singular']
+        allvars['operationId'] = "watch" + allvars['kind']
 
         sensorpy = self.config['template_path'] + "/sensors/" + allvars['operationId'] + ".py"
         sensoryaml = self.config['template_path'] + "/sensors/" + allvars['operationId'] + ".yaml"

@@ -1,9 +1,9 @@
-name: listAllTPR
+name: listAllCRD
 pack: kubernetes
 runner_type: python-script
-description: "list all Third Party Resources"
+description: "list all Custom Resource Definitions"
 enabled: true
-entry_point: "listAllTPR.py"
+entry_point: "listAllCRD.py"
 parameters:
     config_override:
         type: object

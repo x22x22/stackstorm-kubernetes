@@ -1,7 +1,7 @@
 ---
 ref: kubernetes
 name: kubernetes
-description: Kubernetes actions and sensors
+description: st2 content pack containing Kubernetes sensors
 keywords:
   - kubernetes
   - sensors
@@ -10,6 +10,6 @@ version: 1.0.0
 python_versions:
   - "3"
 author: Andrew Moore
-email: andy@impulsed.net
+email: andrew.moore@pearson.com
 contributors:
   - Michael Ward <mward29@gmail.com>

@@ -1,11 +1,11 @@
 ---
-name: "kubernetes_third_party_resource_delete"
+name: "crd_delete"
 pack: "kubernetes"
-description: "Delete third party resources"
+description: "Delete crd"
 enabled: true
 
 trigger:
-  type: "kubernetes.thirdpartyresources"
+  type: "kubernetes.customresourcedefinitions"
 
 criteria:
   trigger.resource:
@@ -13,10 +13,10 @@ criteria:
     pattern: "DELETED"
   trigger.object_kind:
     type: "equals"
-    pattern: "ThirdPartyResource"
+    pattern: "CustomResourceDefinitions"
 
 action:
-  ref: "kubernetes.delete_tpr_sensor"
+  ref: "kubernetes.delete_crd_sensor"
   parameters:
     payload: "{{trigger}}"
 

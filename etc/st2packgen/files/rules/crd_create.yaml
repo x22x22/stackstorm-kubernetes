@@ -1,11 +1,11 @@
 ---
-name: "kubernetes_third_party_resource_create"
+name: "crd_create"
 pack: "kubernetes"
-description: "Check for new third party resources"
+description: "Check for new crds"
 enabled: true
 
 trigger:
-  type: "kubernetes.thirdpartyresources"
+  type: "kubernetes.customresourcedefinitions"
 
 criteria:
   trigger.resource:
@@ -13,9 +13,9 @@ criteria:
     pattern: "ADDED"
   trigger.object_kind:
     type: "equals"
-    pattern: "ThirdPartyResource"
+    pattern: "CustomResourceDefinition"
 
 action:
-  ref: "kubernetes.register_tpr"
+  ref: "kubernetes.register_crd"
   parameters:
     payload: "{{trigger}}"
